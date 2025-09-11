@@ -1,0 +1,14 @@
+[project]
+name = "demo-voxel51"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "fiftyone>=1.8.0",
+    "huggingface-hub>=0.34.4",
+    "pycocotools>=2.0.10",
+    "torch>=2.8.0",
+    "torchvision>=0.23.0",
+    "transformers>=4.56.1",
+]
