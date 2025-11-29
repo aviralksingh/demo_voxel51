@@ -19,6 +19,7 @@ DATASET_NAME = "coco-2017-validation"
 EMBEDDINGS_DIR = "embeddings"
 EMBEDDINGS_FILE = os.path.join(EMBEDDINGS_DIR, "dinov3_embeddings.npy")
 SAMPLE_IDS_FILE = os.path.join(EMBEDDINGS_DIR, "sample_ids.npy")
+FILEPATHS_FILE = os.path.join(EMBEDDINGS_DIR, "filepaths.npy")  # Stable identifier
 EMBEDDINGS_FIELD = "embeddings_dinov3"
 
 def main():
@@ -60,15 +61,18 @@ def main():
         dataset.compute_embeddings(model, embeddings_field=EMBEDDINGS_FIELD)
         print("Embeddings computed!")
     
-    # Extract embeddings and sample IDs
+    # Extract embeddings, sample IDs, and filepaths
     print("Extracting embeddings from dataset...")
     embeddings_list = []
     sample_ids_list = []
+    filepaths_list = []
     
     for sample in dataset:
         if EMBEDDINGS_FIELD in sample.field_names and sample[EMBEDDINGS_FIELD] is not None:
             embeddings_list.append(sample[EMBEDDINGS_FIELD])
             sample_ids_list.append(sample.id)
+            # Use filepath as stable identifier (works across dataset reloads)
+            filepaths_list.append(sample.filepath if sample.filepath else None)
     
     if not embeddings_list:
         raise ValueError(f"No embeddings found in field '{EMBEDDINGS_FIELD}'")
@@ -76,6 +80,7 @@ def main():
     # Convert to numpy arrays
     embeddings_array = np.array(embeddings_list)
     sample_ids_array = np.array(sample_ids_list)
+    filepaths_array = np.array(filepaths_list, dtype=object)
     
     print(f"Extracted {len(embeddings_list)} embeddings")
     print(f"Embedding shape: {embeddings_array.shape}")
@@ -87,9 +92,13 @@ def main():
     print(f"Saving sample IDs to {SAMPLE_IDS_FILE}...")
     np.save(SAMPLE_IDS_FILE, sample_ids_array)
     
+    print(f"Saving filepaths to {FILEPATHS_FILE}...")
+    np.save(FILEPATHS_FILE, filepaths_array)
+    
     print("Done! Embeddings saved successfully.")
     print(f"  - Embeddings: {EMBEDDINGS_FILE}")
     print(f"  - Sample IDs: {SAMPLE_IDS_FILE}")
+    print(f"  - Filepaths: {FILEPATHS_FILE}")
 
 
 if __name__ == "__main__":
