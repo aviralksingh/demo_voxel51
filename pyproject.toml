@@ -7,7 +7,12 @@ requires-python = ">=3.11"
 dependencies = [
     "fiftyone>=1.8.0",
     "huggingface-hub>=0.34.4",
+    "matplotlib>=3.8.0",
+    "numpy>=1.26.0",
+    "pillow>=10.0.0",
+    "plotly>=5.18.0",
     "pycocotools>=2.0.10",
+    "scikit-learn>=1.4.0",
     "torch>=2.8.0",
     "torchvision>=0.23.0",
     "transformers>=4.56.1",
